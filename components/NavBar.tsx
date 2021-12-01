@@ -106,6 +106,21 @@ export default function NavBar() {
             );
         }
     };
+    const themeToggle = () => {
+        return (
+            <IconButton
+                onClick={() => {
+                    colorMode.toggleColorMode();
+                }}
+            >
+                {theme.palette.mode === "dark" ? (
+                    <Brightness7Outlined />
+                ) : (
+                    <Brightness4Outlined />
+                )}
+            </IconButton>
+        );
+    };
     return (
         <React.Fragment>
             <AppBar
@@ -127,17 +142,6 @@ export default function NavBar() {
                         INSTANCE
                     </Typography>
                     <nav>
-                        <IconButton
-                            onClick={() => {
-                                colorMode.toggleColorMode();
-                            }}
-                        >
-                            {theme.palette.mode === "dark" ? (
-                                <Brightness7Outlined />
-                            ) : (
-                                <Brightness4Outlined />
-                            )}
-                        </IconButton>
                         <NextLink href={"/"} passHref>
                             <MUILink
                                 variant="button"
@@ -167,9 +171,10 @@ export default function NavBar() {
                         </NextLink>
                         {registrationButton()}
                         {profileButton()}
+                        {themeToggle()}
+                        {drawerButton()}
                     </nav>
                     {authButton()}
-                    {drawerButton()}
                 </Toolbar>
             </AppBar>
             {drawerSurface()}
