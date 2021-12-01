@@ -1,4 +1,5 @@
-import { CalendarPicker, DatePicker, LocalizationProvider } from "@mui/lab";
+import { CalendarPicker, LocalizationProvider } from "@mui/lab";
+import DateAdapter from "@mui/lab/AdapterDateFns";
 import {
     Button,
     Card,
@@ -8,45 +9,44 @@ import {
     Grid,
     Paper,
     Stack,
-    Typography,
+    Typography
 } from "@mui/material";
 import { Box } from "@mui/system";
+import { ru } from "date-fns/locale";
 import NextLink from "next/link";
 import React, { useState } from "react";
 import EventsList from "../components/EventsList";
+import { EntityTypes } from "../enum/EntityTypes";
+import { useTypedSelector } from "../hooks/typeSelector.hook";
 import MainLayout from "../layouts/MainLayout";
 import IEvent from "../types/IEvent";
 import IResponse from "../types/IResponse";
-import DateAdapter from "@mui/lab/AdapterDateFns";
-import { ru } from "date-fns/locale";
 
 export interface IIndexProps {
     events: IEvent[];
 }
 
-const Index = ({ events }: IIndexProps) => {
-    const [date, setDate] = useState<Date | null>(new Date());
-    const formatDate = (date: string) => {
-        const correctDate = new Date(date);
-        const strDate = `${
-            correctDate.getUTCDate() < 10
-                ? "0" + correctDate.getUTCDate()
-                : correctDate.getUTCDate()
-        }.${
-            correctDate.getUTCMonth() < 10
-                ? "0" + correctDate.getUTCMonth()
-                : correctDate.getUTCMonth()
-        }.${correctDate.getUTCFullYear()}`;
-        const strTime = `${
-            correctDate.getUTCHours() < 10
-                ? "0" + correctDate.getUTCHours()
-                : correctDate.getUTCHours()
-        }:${
-            correctDate.getUTCMinutes() < 10
-                ? "0" + correctDate.getUTCMinutes()
-                : correctDate.getUTCMinutes()
-        }`;
-        return `Дата: ${strDate} | Время: ${strTime}`;
+function Index({ events }: IIndexProps) {
+    const [calendarDate, setCalendarDate] = useState<Date | null>(new Date());
+    const { isAuth, type } = useTypedSelector((state) => state.auth);
+    const createEventButton = () => {
+        if (isAuth && type === EntityTypes.Organization) {
+            return (
+                <Grid
+                    container
+                    maxWidth={"md"}
+                    sx={{
+                        mb: 3,
+                    }}
+                >
+                    <Grid item xs={12}>
+                        <Button size="large" variant="outlined">
+                            Создать мероприятие
+                        </Button>
+                    </Grid>
+                </Grid>
+            );
+        }
     };
     return (
         <MainLayout>
@@ -76,18 +76,18 @@ const Index = ({ events }: IIndexProps) => {
                             >
                                 События на{" "}
                                 {`${
-                                    date.getUTCDate() < 10
-                                        ? "0" + date.getUTCDate()
-                                        : date.getUTCDate()
+                                    calendarDate.getUTCDate() < 10
+                                        ? "0" + calendarDate.getUTCDate()
+                                        : calendarDate.getUTCDate()
                                 }.${
-                                    date.getUTCMonth() < 10
-                                        ? "0" + date.getUTCMonth() + 1
-                                        : date.getUTCMonth() + 1
-                                }.${date.getUTCFullYear()}`}
+                                    calendarDate.getUTCMonth() < 10
+                                        ? "0" + calendarDate.getUTCMonth() + 1
+                                        : calendarDate.getUTCMonth() + 1
+                                }.${calendarDate.getUTCFullYear()}`}
                             </Typography>
                         </Grid>
                     </Grid>
-                    <Grid container maxWidth="md" spacing={4} sx={{ mb: 6 }}>
+                    <Grid container maxWidth="md" spacing={4} sx={{ mb: 3 }}>
                         <Grid item xs={12} md={5}>
                             <Paper elevation={3}>
                                 <LocalizationProvider
@@ -95,8 +95,8 @@ const Index = ({ events }: IIndexProps) => {
                                     locale={ru}
                                 >
                                     <CalendarPicker
-                                        date={date}
-                                        onChange={(newDate) => setDate(newDate)}
+                                        date={calendarDate}
+                                        onChange={(newDate) => setCalendarDate(newDate)}
                                         minDate={new Date()}
                                     />
                                 </LocalizationProvider>
@@ -155,6 +155,7 @@ const Index = ({ events }: IIndexProps) => {
                             </Stack>
                         </Grid>
                     </Grid>
+                    {createEventButton()}
                     <Typography component={"h1"} variant="h5">
                         Расписание
                     </Typography>
@@ -188,14 +189,14 @@ const Index = ({ events }: IIndexProps) => {
             </Container>
         </MainLayout>
     );
-};
+}
 
-export async function getServerSideProps() {
-    const res = await fetch("http://localhost:8000/api/lesson/limit/3");
-    const json: IResponse<{ lessons: IEvent[] }> = await res.json();
+export async function getServerSideProps({ req, res }) {
+    const result = await fetch("http://localhost:8000/api/event/limit/3");
+    const json: IResponse<{ events: IEvent[] }> = await result.json();
 
     const props: IIndexProps = {
-        events: json.data.lessons,
+        events: json.data.events,
     };
 
     return { props };

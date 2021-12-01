@@ -4,42 +4,69 @@ import {
     Button,
     Container,
     CssBaseline,
+    FormControlLabel,
     Grid,
+    Radio,
+    RadioGroup,
     TextField,
     Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import MainLayout from "../../layouts/MainLayout";
+import { useRouter } from "next/dist/client/router";
 import React, { useState } from "react";
+import { useCookies } from "react-cookie";
+import { EntityTypes } from "../../enum/EntityTypes";
+import useAuth from "../../hooks/auth.hook";
 import useHttp from "../../hooks/http.hook";
+import { useTypedSelector } from "../../hooks/typeSelector.hook";
+import MainLayout from "../../layouts/MainLayout";
 import IResponse from "../../types/IResponse";
 
 const Login = () => {
     const { request } = useHttp();
+    const router = useRouter();
+    const { login } = useAuth();
     const [form, setForm] = useState({
         email: "",
         password: "",
     });
+    const [userType, setUserType] = useState<EntityTypes | string>(
+        EntityTypes.User
+    );
     const formHandler = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
     const onSubmit = async (e) => {
         e.preventDefault();
+        console.log(form, userType);
         if (form.email && form.password) {
             const body = form;
-            const data: IResponse<{ token: string }> = await request(
-                "/api/s1",
-                "auth/login",
-                "POST",
-                body
-            );
-            console.log(data);
+            if (userType == EntityTypes.User) {
+                const res: IResponse<{
+                    token: string;
+                    id: number;
+                    type: EntityTypes;
+                }> = await request("/api/s1", "auth/login", "POST", body);
+                login(res.data);
+                if (!res.error) {
+                    router.push("/");
+                }
+            } else {
+                const res: IResponse<{
+                    token: string;
+                    id: number;
+                    type: EntityTypes;
+                }> = await request("/api/s1", "auth/org_login", "POST", body);
+                login(res.data);
+                if (!res.error) {
+                    router.push("/");
+                }
+            }
         }
     };
     return (
         <MainLayout>
             <Container component="main" maxWidth="sm">
-                <CssBaseline />
                 <Box
                     sx={{
                         marginTop: 8,
@@ -82,6 +109,25 @@ const Login = () => {
                                     onChange={formHandler}
                                     value={form.password}
                                 />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <RadioGroup
+                                    value={userType}
+                                    onChange={(e) =>
+                                        setUserType(e.target.value)
+                                    }
+                                >
+                                    <FormControlLabel
+                                        control={<Radio />}
+                                        value={EntityTypes.User}
+                                        label={"Участник"}
+                                    />
+                                    <FormControlLabel
+                                        control={<Radio />}
+                                        value={EntityTypes.Organization}
+                                        label={"Организация"}
+                                    />
+                                </RadioGroup>
                             </Grid>
                         </Grid>
                         <Button

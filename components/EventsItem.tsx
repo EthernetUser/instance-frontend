@@ -58,7 +58,7 @@ const EventsItem = ({ event }: IEventsItemProps) => {
                             Записаться
                         </Button>
                     </NextLink>
-                    <NextLink href={"/registration"} passHref>
+                    <NextLink href={`/event/${event.id}`} passHref>
                         <Button size="small" variant="outlined">
                             Подробней
                         </Button>

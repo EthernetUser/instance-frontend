@@ -3,10 +3,10 @@ import {
     Link,
     Pagination,
     PaginationItem,
-    Typography,
+    Typography
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { GetServerSidePropsContext, GetStaticPropsContext } from "next";
+import { GetServerSidePropsContext } from "next";
 import NextLink from "next/link";
 import React from "react";
 import EventsList from "../../components/EventsList";
@@ -14,7 +14,7 @@ import MainLayout from "../../layouts/MainLayout";
 import IEvent from "../../types/IEvent";
 import IResponse from "../../types/IResponse";
 
-export interface IEventsProps {
+interface IEventsProps {
     events: IEvent[];
     count: number;
     pageCount: number;
@@ -39,7 +39,7 @@ const Events = ({ events, count, pageCount, page }: IEventsProps) => {
                     <Typography
                         sx={{
                             mb: 3,
-                            color: "GrayText",
+                            color: "text.secondary",
                         }}
                     >
                         Найдено {count} записей
@@ -78,14 +78,14 @@ export async function getServerSideProps(
     ctx: GetServerSidePropsContext<{ page: string }>,
 ) {
     const res = await fetch(
-        `http://localhost:8000/api/lesson/page/${ctx.params.page}`
+        `http://localhost:8000/api/event/page/${ctx.params.page}`
     );
-    let json: IResponse<{ rows: IEvent[]; count: number }> = await res.json();
-    const pageCount: number = Math.ceil(json.data.count / 10);
+    let json: IResponse<{ events: { rows: IEvent[]; count: number } }> = await res.json();
+    const pageCount: number = Math.ceil(json.data.events.count / 4);
 
     const props: IEventsProps = {
-        events: json.data.rows,
-        count: json.data.count,
+        events: json.data.events.rows,
+        count: json.data.events.count,
         page: +ctx.params.page,
         pageCount,
     };

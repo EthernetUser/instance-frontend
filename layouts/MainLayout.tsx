@@ -1,28 +1,36 @@
 import { CssBaseline } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { GlobalStyles } from "@mui/styled-engine";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import ColorModeContext from "../context/ColorModeContext";
 
 const MainLayout: React.FC = ({ children }) => {
-    // const theme = createTheme({
-    //     palette: {
-    //         mode: 'dark'
-    //     }
-    // }, ruRU);
     const [mode, setMode] = useState<"light" | "dark">("light");
+
+    useEffect(() => {
+        setMode(
+            typeof window !== "undefined"
+                ? localStorage.getItem("colorMode") === "light"
+                    ? "dark"
+                    : "light"
+                : "light"
+        );
+        
+    }, []);
+
 
     const colorMode = useMemo(
         () => ({
             toggleColorMode: () => {
-                setMode((prevMode) =>
+                setMode((prevMode) => 
                     prevMode === "light" ? "dark" : "light"
                 );
+                localStorage.setItem("colorMode", mode);
             },
         }),
-        []
+        [mode]
     );
 
     const theme = useMemo(
@@ -38,10 +46,10 @@ const MainLayout: React.FC = ({ children }) => {
         <>
             <ColorModeContext.Provider value={colorMode}>
                 <ThemeProvider theme={theme}>
-                    <GlobalStyles styles={{ "*": { margin: 0, padding: 0 } }} />
+                    <GlobalStyles styles={{ "*": { margin: 0, padding: 0 }}} />
                     <CssBaseline />
                     <NavBar />
-                    {children}
+                        {children}
                     <Footer />
                 </ThemeProvider>
             </ColorModeContext.Provider>

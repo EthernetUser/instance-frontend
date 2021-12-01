@@ -15,11 +15,21 @@
     "@mui/icons-material": "^5.0.5",
     "@mui/lab": "^5.0.0-alpha.53",
     "@mui/material": "^5.0.2",
+    "@types/cookie": "^0.4.1",
+    "@types/react-redux": "^7.1.20",
+    "cookie": "^0.4.1",
     "date-fns": "^2.25.0",
     "next": "11.1.2",
+    "next-redux-wrapper": "^7.0.5",
     "nextjs-cors": "^2.0.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-cookie": "^4.1.1",
+    "react-dom": "17.0.2",
+    "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
+    "redux-thunk": "^2.4.0",
+    "swr": "^1.0.1",
+    "universal-cookie": "^4.0.4"
   },
   "devDependencies": {
     "@types/node": "^16.10.1",

@@ -13,15 +13,99 @@ import {
     Typography,
     useTheme,
 } from "@mui/material";
+import { useRouter } from "next/dist/client/router";
 import NextLink from "next/link";
 import React, { useContext, useState } from "react";
 import ColorModeContext from "../context/ColorModeContext";
+import { EntityTypes } from "../enum/EntityTypes";
+import useAuth from "../hooks/auth.hook";
+import { useTypedSelector } from "../hooks/typeSelector.hook";
 import EventDrawer from "./EventDrawer";
 
 export default function NavBar() {
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const router = useRouter();
     const theme = useTheme();
     const colorMode = useContext(ColorModeContext);
+    const { isAuth, type } = useTypedSelector((state) => state.auth);
+    const { logout } = useAuth();
+
+    const authButton = () => {
+        if (!isAuth) {
+            return (
+                <NextLink href={"/login"} passHref>
+                    <Button variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+                        Войти
+                    </Button>
+                </NextLink>
+            );
+        } else {
+            return (
+                <Button
+                    variant="outlined"
+                    sx={{ my: 1, mx: 1.5 }}
+                    color="error"
+                    onClick={() => {
+                        logout();
+                        router.push("/");
+                    }}
+                >
+                    Выход
+                </Button>
+            );
+        }
+    };
+    const registrationButton = () => {
+        if (!isAuth) {
+            return (
+                <NextLink href={"/registration"} passHref>
+                    <MUILink
+                        variant="button"
+                        color="text.primary"
+                        sx={{ my: 1, mx: 1.5 }}
+                    >
+                        Регистрация
+                    </MUILink>
+                </NextLink>
+            );
+        }
+    };
+    const profileButton = () => {
+        if (isAuth) {
+            return (
+                <NextLink href={"/profile"} passHref>
+                    <MUILink
+                        variant="button"
+                        color="text.primary"
+                        sx={{ my: 1, mx: 1.5 }}
+                    >
+                        Профиль
+                    </MUILink>
+                </NextLink>
+            );
+        }
+    };
+    const drawerButton = () => {
+        if (isAuth && type == EntityTypes.User) {
+            return (
+                <IconButton onClick={() => setDrawerOpen(true)}>
+                    <Badge badgeContent={4} color="error">
+                        <Event />
+                    </Badge>
+                </IconButton>
+            );
+        }
+    };
+    const drawerSurface = () => {
+        if (isAuth && type == EntityTypes.User) {
+            return (
+                <EventDrawer
+                    drawerOpen={drawerOpen}
+                    setDrawerOpen={setDrawerOpen}
+                />
+            );
+        }
+    };
     return (
         <React.Fragment>
             <AppBar
@@ -46,7 +130,6 @@ export default function NavBar() {
                         <IconButton
                             onClick={() => {
                                 colorMode.toggleColorMode();
-                                console.log("hello");
                             }}
                         >
                             {theme.palette.mode === "dark" ? (
@@ -82,32 +165,14 @@ export default function NavBar() {
                                 Вопросы
                             </MUILink>
                         </NextLink>
-                        <NextLink href={"/registration"} passHref>
-                            <MUILink
-                                variant="button"
-                                color="text.primary"
-                                sx={{ my: 1, mx: 1.5 }}
-                            >
-                                Регистрация
-                            </MUILink>
-                        </NextLink>
+                        {registrationButton()}
+                        {profileButton()}
                     </nav>
-                    <NextLink href={"/login"} passHref>
-                        <Button variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-                            Вход
-                        </Button>
-                    </NextLink>
-                    <IconButton onClick={() => setDrawerOpen(true)}>
-                        <Badge badgeContent={4} color="error">
-                            <Event />
-                        </Badge>
-                    </IconButton>
+                    {authButton()}
+                    {drawerButton()}
                 </Toolbar>
             </AppBar>
-            <EventDrawer
-                drawerOpen={drawerOpen}
-                setDrawerOpen={setDrawerOpen}
-            />
+            {drawerSurface()}
         </React.Fragment>
     );
 }
