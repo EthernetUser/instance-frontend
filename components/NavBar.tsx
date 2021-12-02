@@ -45,9 +45,9 @@ export default function NavBar() {
                     variant="outlined"
                     sx={{ my: 1, mx: 1.5 }}
                     color="error"
-                    onClick={() => {
-                        logout();
-                        router.push("/");
+                    onClick={async () => {
+                        await logout();
+                        await router.push("/");
                     }}
                 >
                     Выход

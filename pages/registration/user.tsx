@@ -1,7 +1,7 @@
 import {Person} from "@mui/icons-material";
 import {Avatar, Button, Container, CssBaseline, Grid, Link, MenuItem, TextField, Typography,} from "@mui/material";
 import {Box} from "@mui/system";
-import {useState} from "react";
+import React, {useState} from "react";
 import MainLayout from "../../layouts/MainLayout";
 import NextLink from "next/link";
 import useHttp from "../../hooks/http.hook";
@@ -40,9 +40,9 @@ const RegistrationUser = () => {
             type: EntityTypes;
         }> = await request("/api/s1", "auth/registration", "POST", form);
         if (!data.error) {
-            login(data.data);
+            await login(data.data);
             showSnack('Вы были зарегистрированны!', 'success');
-            router.push('/');
+            await router.push('/');
         }
     };
     return (

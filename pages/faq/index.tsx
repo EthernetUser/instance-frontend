@@ -1,6 +1,7 @@
 import { Container, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import MainLayout from "../../layouts/MainLayout";
+import React from "react";
 
 const FAQ = () => {
     return (

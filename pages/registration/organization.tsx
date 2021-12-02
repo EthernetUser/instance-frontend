@@ -1,18 +1,8 @@
-import { Group } from "@mui/icons-material";
-import {
-    Avatar,
-    Button,
-    Container,
-    CssBaseline,
-    Grid,
-    Link,
-    MenuItem,
-    TextField,
-    Typography
-} from "@mui/material";
-import { Box } from "@mui/system";
+import {Group} from "@mui/icons-material";
+import {Avatar, Button, Container, CssBaseline, Grid, Link, TextField, Typography} from "@mui/material";
+import {Box} from "@mui/system";
 import NextLink from "next/link";
-import { useState } from "react";
+import React, {useState} from "react";
 import useHttp from "../../hooks/http.hook";
 import MainLayout from "../../layouts/MainLayout";
 import IResponse from "../../types/IResponse";
@@ -22,7 +12,7 @@ const RegistrationOrganization = () => {
     const [form, setForm] = useState({
         name: "",
         email: "",
-        desctiption: "",
+        description: "",
         category: "",
         password: "",
     });
@@ -31,12 +21,11 @@ const RegistrationOrganization = () => {
     };
     const onSubmit = async (e) => {
         e.preventDefault();
-        const body = form;
         const data: IResponse<{ token: string }> = await request(
             "/api/s1",
             "auth/registration",
             "POST",
-            body
+            form
         );
         console.log(data);
     };
@@ -82,7 +71,7 @@ const RegistrationOrganization = () => {
                                     name="description"
                                     autoComplete="description"
                                     onChange={formHandler}
-                                    value={form.desctiption}
+                                    value={form.description}
                                 />
                             </Grid>
                             <Grid item xs={12}>

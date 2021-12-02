@@ -1,4 +1,4 @@
-import { EntityTypes } from "./../enum/EntityTypes";
+import { EntityTypes } from "../enum/EntityTypes";
 export interface IAuthState {
     isAuth: boolean;
     token: null | string;

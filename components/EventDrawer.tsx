@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useRouter } from "next/dist/client/router";
+import React from "react";
 
 const EventDrawer = ({ drawerOpen, setDrawerOpen }) => {
     const router = useRouter();
@@ -46,7 +47,7 @@ const EventDrawer = ({ drawerOpen, setDrawerOpen }) => {
                         "Бой на мечах",
                         "Урок фехтования",
                         "Сходка Крестоносцев",
-                        "Ковка мечей asdfasdfasdfasdfaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "Ковка мечей ambassadorial",
                     ].map((text: string, i) => (
                         <ListItem button key={text} onClick={() => router.push('/events/id/0')}>
                             <ListItemIcon>

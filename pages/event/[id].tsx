@@ -4,6 +4,7 @@ import { formatDate } from "../../helpers";
 import MainLayout from "../../layouts/MainLayout";
 import IEvent from "../../types/IEvent";
 import IResponse from "../../types/IResponse";
+import React from "react";
 
 interface IEventProps {
     events: IEvent;

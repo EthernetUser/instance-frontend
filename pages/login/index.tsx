@@ -49,7 +49,7 @@ const Login = () => {
                 login(res.data);
                 if (!res.error) {
                     showSnack('Вы вошли в акаунт!', 'success');
-                    router.push("/");
+                    await router.push("/");
                 }
             } else {
                 const res: IResponse<{
@@ -60,7 +60,7 @@ const Login = () => {
                 login(res.data);
                 if (!res.error) {
                     showSnack('Вы вошли в акаунт!', 'success');
-                    router.push("/");
+                    await router.push("/");
                 }
             }
         }

@@ -1,7 +1,7 @@
 import { CssBaseline } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { GlobalStyles } from "@mui/styled-engine";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import ColorModeContext from "../context/ColorModeContext";

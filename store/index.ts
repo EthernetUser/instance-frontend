@@ -1,6 +1,6 @@
 import { Context, createWrapper, MakeStore } from "next-redux-wrapper";
 import { createStore, Store } from "redux";
-import { reducer, RootState } from "./reducers/index";
+import { reducer, RootState } from "./reducers";
 
 const makeStore: MakeStore<Store<RootState>> = (context: Context) =>
     createStore(reducer);

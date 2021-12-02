@@ -9,6 +9,7 @@ import {
 import NextLink from "next/link";
 import { formatDate } from "../helpers";
 import IEvent from "../types/IEvent";
+import React from "react";
 
 export interface IEventsItemProps {
     event: IEvent;

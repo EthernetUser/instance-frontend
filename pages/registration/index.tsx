@@ -6,7 +6,7 @@ import NextLink from "next/link";
 import {GetServerSidePropsContext} from "next";
 import {parseCookies} from "../../helpers";
 import {IAuthCookies} from "../../types/IAuthCookies";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useRouter} from "next/dist/client/router";
 import Loader from "../../components/Loader";
 
