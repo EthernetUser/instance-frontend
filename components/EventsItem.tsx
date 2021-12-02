@@ -7,6 +7,7 @@ import {
     Typography,
 } from "@mui/material";
 import NextLink from "next/link";
+import { formatDate } from "../helpers";
 import IEvent from "../types/IEvent";
 
 export interface IEventsItemProps {
@@ -14,28 +15,6 @@ export interface IEventsItemProps {
 }
 
 const EventsItem = ({ event }: IEventsItemProps) => {
-    const formatDate = (date: string) => {
-        const correctDate = new Date(date);
-        const strDate = `${
-            correctDate.getUTCDate() < 10
-                ? "0" + correctDate.getUTCDate()
-                : correctDate.getUTCDate()
-        }.${
-            correctDate.getUTCMonth() < 10
-                ? "0" + correctDate.getUTCMonth()
-                : correctDate.getUTCMonth()
-        }.${correctDate.getUTCFullYear()}`;
-        const strTime = `${
-            correctDate.getUTCHours() < 10
-                ? "0" + correctDate.getUTCHours()
-                : correctDate.getUTCHours()
-        }:${
-            correctDate.getUTCMinutes() < 10
-                ? "0" + correctDate.getUTCMinutes()
-                : correctDate.getUTCMinutes()
-        }`;
-        return `Дата: ${strDate} | Время: ${strTime}`;
-    };
     return (
         <Grid item xs={12}>
             <Card variant="elevation" elevation={3}>

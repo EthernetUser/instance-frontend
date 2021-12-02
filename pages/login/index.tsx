@@ -1,9 +1,8 @@
-import { Person } from "@mui/icons-material";
+import {Person} from "@mui/icons-material";
 import {
     Avatar,
     Button,
     Container,
-    CssBaseline,
     FormControlLabel,
     Grid,
     Radio,
@@ -11,14 +10,13 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import { useRouter } from "next/dist/client/router";
-import React, { useState } from "react";
-import { useCookies } from "react-cookie";
-import { EntityTypes } from "../../enum/EntityTypes";
+import {Box} from "@mui/system";
+import {useRouter} from "next/dist/client/router";
+import React, {useState} from "react";
+import {EntityTypes} from "../../enum/EntityTypes";
 import useAuth from "../../hooks/auth.hook";
 import useHttp from "../../hooks/http.hook";
-import { useTypedSelector } from "../../hooks/typeSelector.hook";
+import {useSnackBarHook} from "../../hooks/snackbar.hook";
 import MainLayout from "../../layouts/MainLayout";
 import IResponse from "../../types/IResponse";
 
@@ -30,6 +28,7 @@ const Login = () => {
         email: "",
         password: "",
     });
+    const {showSnack} = useSnackBarHook()
     const [userType, setUserType] = useState<EntityTypes | string>(
         EntityTypes.User
     );
@@ -49,6 +48,7 @@ const Login = () => {
                 }> = await request("/api/s1", "auth/login", "POST", body);
                 login(res.data);
                 if (!res.error) {
+                    showSnack('Вы вошли в акаунт!', 'success');
                     router.push("/");
                 }
             } else {
@@ -59,6 +59,7 @@ const Login = () => {
                 }> = await request("/api/s1", "auth/org_login", "POST", body);
                 login(res.data);
                 if (!res.error) {
+                    showSnack('Вы вошли в акаунт!', 'success');
                     router.push("/");
                 }
             }

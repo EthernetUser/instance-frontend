@@ -1,21 +1,15 @@
-import { Person } from "@mui/icons-material";
-import {
-    Avatar,
-    Button,
-    Container,
-    CssBaseline,
-    Grid,
-    Link,
-    MenuItem,
-    TextField,
-    Typography,
-} from "@mui/material";
-import { Box } from "@mui/system";
-import { useState } from "react";
+import {Person} from "@mui/icons-material";
+import {Avatar, Button, Container, CssBaseline, Grid, Link, MenuItem, TextField, Typography,} from "@mui/material";
+import {Box} from "@mui/system";
+import {useState} from "react";
 import MainLayout from "../../layouts/MainLayout";
 import NextLink from "next/link";
 import useHttp from "../../hooks/http.hook";
 import IResponse from "../../types/IResponse";
+import useAuth from "../../hooks/auth.hook";
+import {EntityTypes} from "../../enum/EntityTypes";
+import {useSnackBarHook} from "../../hooks/snackbar.hook";
+import {useRouter} from "next/dist/client/router";
 
 const RegistrationUser = () => {
     const { request } = useHttp();
@@ -28,6 +22,9 @@ const RegistrationUser = () => {
         password: "",
         weaponProficiencyLevel: "Новичек",
     });
+    const { login } = useAuth();
+    const { showSnack } = useSnackBarHook();
+    const router = useRouter()
     const weaponLevels = ["Новичек", "Уже занимался", "Продолжающий"];
     const formHandler = (e) => {
         setForm({ ...form, [e.target.id]: e.target.value as string });
@@ -37,14 +34,16 @@ const RegistrationUser = () => {
     };
     const onSubmit = async (e) => {
         e.preventDefault();
-        const body = form;
-        const data: IResponse<{ token: string }> = await request(
-            "/api/s1",
-            "auth/registration",
-            "POST",
-            body
-        );
-        console.log(data);
+        const data: IResponse<{
+            token: string;
+            id: number;
+            type: EntityTypes;
+        }> = await request("/api/s1", "auth/registration", "POST", form);
+        if (!data.error) {
+            login(data.data);
+            showSnack('Вы были зарегистрированны!', 'success');
+            router.push('/');
+        }
     };
     return (
         <MainLayout>

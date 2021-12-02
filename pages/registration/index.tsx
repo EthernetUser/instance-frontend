@@ -1,19 +1,30 @@
-import { Group, Person } from "@mui/icons-material";
-import {
-    Avatar,
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    Container,
-    Grid,
-    Typography,
-} from "@mui/material";
-import { Box } from "@mui/system";
+import {Group, Person} from "@mui/icons-material";
+import {Avatar, Button, Card, CardActions, CardContent, Container, Grid, Typography,} from "@mui/material";
+import {Box} from "@mui/system";
 import MainLayout from "../../layouts/MainLayout";
-import NextLink from "next/link"
+import NextLink from "next/link";
+import {GetServerSidePropsContext} from "next";
+import {parseCookies} from "../../helpers";
+import {IAuthCookies} from "../../types/IAuthCookies";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/dist/client/router";
+import Loader from "../../components/Loader";
 
-const Registration = () => {
+const Registration = ({ redirect }) => {
+    const router = useRouter();
+    const [loader, setLoader] = useState(true);
+    useEffect(() => {
+        if(redirect) {
+            router.push("/");
+        } else {
+            setLoader(false);
+        }
+    }, [redirect, router]);
+
+    if(loader) {
+        return <Loader/> 
+    }
+
     return (
         <MainLayout>
             <Container component={"main"} maxWidth={"md"}>
@@ -39,16 +50,22 @@ const Registration = () => {
                                     >
                                         <Person />
                                     </Avatar>
-                                    <Typography variant={"h6"} textAlign={'center'}>
+                                    <Typography
+                                        variant={"h6"}
+                                        textAlign={"center"}
+                                    >
                                         Я хочу посещать мероприятия
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <NextLink href={"/registration/user"} passHref>
-                                        <Button variant={'outlined'}>
+                                    <NextLink
+                                        href={"/registration/user"}
+                                        passHref
+                                    >
+                                        <Button variant={"outlined"}>
                                             Зарегистрироваться как участник
                                         </Button>
-                                    </NextLink>     
+                                    </NextLink>
                                 </CardActions>
                             </Box>
                         </Card>
@@ -74,16 +91,22 @@ const Registration = () => {
                                     >
                                         <Group />
                                     </Avatar>
-                                    <Typography variant={"h6"} textAlign={'center'}>
+                                    <Typography
+                                        variant={"h6"}
+                                        textAlign={"center"}
+                                    >
                                         Я хочу организовывать мероприятий
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <NextLink href={"/registration/organization"} passHref>
-                                        <Button variant={'outlined'}>
+                                    <NextLink
+                                        href={"/registration/organization"}
+                                        passHref
+                                    >
+                                        <Button variant={"outlined"}>
                                             Зарегистрироваться как организация
                                         </Button>
-                                    </NextLink>     
+                                    </NextLink>
                                 </CardActions>
                             </Box>
                         </Card>
@@ -93,5 +116,16 @@ const Registration = () => {
         </MainLayout>
     );
 };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    const cookie = parseCookies(ctx.req) as unknown as IAuthCookies;
+    if (cookie.AT) {
+        return {
+            props: {
+                redirect: true,
+            },
+        };
+    }
+}
 
 export default Registration;
